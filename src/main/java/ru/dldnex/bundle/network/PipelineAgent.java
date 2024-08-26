@@ -36,8 +36,10 @@ public class PipelineAgent {
 
     public void instrument(@NotNull Channel channel) throws SandwichRuntimeException {
         ChannelPipeline pipeline = channel.pipeline();
+
+        String beforeHandlerName =  pipeline.get("encrypt") != null ? "encrypt" : "prepender";
         // TODO: replace natives with proxies here!
-        pipeline.addBefore("encrypt", "sandwich", new SandwichSqueezer(this.flagRegistry));
+        pipeline.addBefore(beforeHandlerName, "sandwich", new SandwichSqueezer(this.flagRegistry));
 
         // Mark as injected
         channel.attr(MARKER).set(true);
