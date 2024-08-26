@@ -13,6 +13,7 @@ import ru.dldnex.bundle.registry.IdentityFlagRegistry;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 /**
  * Yes.
@@ -20,8 +21,13 @@ import java.util.Iterator;
  * I guess that explanation creates too many interpretations.
  */
 public class SandwichFacade {
+
     private final IdentityFlagRegistry identityFlagRegistry = new IdentityFlagRegistry();
-    private final PipelineAgent pipelineAgent = new PipelineAgent(identityFlagRegistry);
+    private final PipelineAgent pipelineAgent;
+
+    public SandwichFacade(@NotNull Logger logger) {
+        pipelineAgent = new PipelineAgent(logger, this.identityFlagRegistry);
+    }
 
     private @NotNull NetworkManager getNetworkManager(@NotNull Player player) {
         EntityPlayer handle = ((CraftPlayer) player).getHandle();
@@ -31,6 +37,17 @@ public class SandwichFacade {
     public void inject(@NotNull Player player) throws SandwichRuntimeException {
         Channel channel = getNetworkManager(player).channel;
         pipelineAgent.instrument(channel);
+    }
+
+    public void sendPackets(@NotNull Player player, @NotNull Iterable<Object> packets) throws SandwichRuntimeException {
+        NetworkManager networkManager = this.getNetworkManager(player);
+        for (Object packet : packets) {
+            networkManager.sendPacket((Packet<?>) packet);
+        }
+    }
+
+    public void sendPackets(@NotNull Player player, @NotNull Object... packets) throws SandwichRuntimeException {
+        this.sendPackets(player, Arrays.asList(packets));
     }
 
     public void sendSandwich(@NotNull Player player, @NotNull Iterable<Object> packets) throws SandwichRuntimeException {

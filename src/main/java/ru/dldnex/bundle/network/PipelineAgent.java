@@ -13,6 +13,7 @@ import ru.dldnex.bundle.registry.IdentityFlagRegistry;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
+import java.util.logging.Logger;
 
 public class PipelineAgent {
     private static final MethodType ENCODE_METHOD_TYPE = MethodType.methodType(void.class, ChannelHandlerContext.class, Object.class, ByteBuf.class);
@@ -27,10 +28,12 @@ public class PipelineAgent {
         }
     }
 
+    private final Logger logger;
     public static final AttributeKey<Boolean> MARKER = AttributeKey.valueOf("BadSandwich:Marker");
     private final @NotNull IdentityFlagRegistry flagRegistry;
 
-    public PipelineAgent(@NotNull IdentityFlagRegistry flagRegistry) {
+    public PipelineAgent(@NotNull Logger logger, @NotNull IdentityFlagRegistry flagRegistry) {
+        this.logger = logger;
         this.flagRegistry = flagRegistry;
     }
 
@@ -39,7 +42,7 @@ public class PipelineAgent {
 
         String beforeHandlerName =  pipeline.get("encrypt") != null ? "encrypt" : "prepender";
         // TODO: replace natives with proxies here!
-        pipeline.addBefore(beforeHandlerName, "sandwich", new SandwichSqueezer(this.flagRegistry));
+        pipeline.addBefore(beforeHandlerName, "sandwich", new SandwichSqueezer(this.logger, this.flagRegistry));
 
         // Mark as injected
         channel.attr(MARKER).set(true);
