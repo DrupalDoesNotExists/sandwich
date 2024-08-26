@@ -22,8 +22,8 @@ public class PipelineAgent {
         try {
             METHOD_HANDLE = MethodHandles.privateLookupIn(MessageToByteEncoder.class, MethodHandles.lookup())
                     .findVirtual(MessageToByteEncoder.class, "encode", ENCODE_METHOD_TYPE);
-        } catch (NoSuchMethodException | IllegalAccessException e) {
-            throw new SandwichRuntimeException("", e);
+        } catch (Exception e) {
+            throw new SandwichRuntimeException("Unable to prepare injection instruments", e);
         }
     }
 
