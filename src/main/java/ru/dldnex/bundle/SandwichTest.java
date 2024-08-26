@@ -7,6 +7,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -47,7 +48,7 @@ public class SandwichTest extends JavaPlugin implements Listener {
         HandlerList.unregisterAll((Plugin) this);
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.MONITOR)
     public void joined(PlayerJoinEvent event) {
         if (USE_SANDWICH) sandwichFacade.inject(event.getPlayer());
     }

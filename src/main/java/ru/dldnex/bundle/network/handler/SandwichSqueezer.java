@@ -1,4 +1,4 @@
-package ru.dldnex.bundle.network;
+package ru.dldnex.bundle.network.handler;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
