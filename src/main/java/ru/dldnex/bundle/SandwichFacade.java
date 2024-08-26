@@ -38,7 +38,7 @@ public class SandwichFacade {
         Channel channel = networkManager.channel;
         // ProtocolLib using netty 4.0.23.Final. So method io.netty.util.AttributeMap.hasAttr() isn't implemented
         // in com.comphenix.protocol.injector.netty.channel.NettyChannelProxy
-        if (channel.attr(PipelineAgent.MARKER) == null) {
+        if (channel.attr(PipelineAgent.MARKER).get() == null) {
             throw new SandwichRuntimeException("Sandwiched packets not sent. You probably forgot to call inject.");
         }
         Iterator<Object> iterator = packets.iterator();
