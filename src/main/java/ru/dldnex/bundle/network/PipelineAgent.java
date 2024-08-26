@@ -9,6 +9,7 @@ import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import ru.dldnex.bundle.exception.SandwichRuntimeException;
 import ru.dldnex.bundle.registry.IdentityFlagRegistry;
+import ru.dldnex.bundle.util.CollectionUtils;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -52,7 +53,7 @@ public class PipelineAgent {
 
         Logger logger = this.plugin.getLogger();
 
-        List<String> handlerNamesNatural = pipeline.names();
+        List<String> handlerNamesReversed = CollectionUtils.reverseList(pipeline.names());
         for (String name : pipeline.names()) {
             if (name.equals("DefaultChannelPipeline$TailContext#0")) {
                 logger.info("Unable to enable debug for channel \"" + name + "\"");
@@ -62,12 +63,12 @@ public class PipelineAgent {
             pipeline.addAfter(name, "debug-after-" + name, new DebugHandler(name, this.handlersHandlingTypesAfter));
         }
 
-        plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
-            logger.info("* PIPELINE (natural order - writing, debug handlers added with \"pipeline.addAfter()\"):");
-            for (String handlerName : handlerNamesNatural) {
+        this.plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, () -> {
+            logger.info("Pipeline with packets writing order (reversed pipeline.names()):");
+            for (String handlerName : handlerNamesReversed) {
                 plugin.getLogger().info(handlerName
-                        + ": " + this.handlersHandlingTypesBefore.get(handlerName)
-                        + " -> " + this.handlersHandlingTypesAfter.get(handlerName));
+                        + ": " + this.handlersHandlingTypesAfter.get(handlerName)
+                        + " -> " + this.handlersHandlingTypesBefore.get(handlerName));
             }
         }, 20L * 3);
     }
