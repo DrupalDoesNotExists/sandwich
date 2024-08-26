@@ -1,3 +1,4 @@
 name: SandwichTest
 version: 1.0.0
 main: ru.dldnex.bundle.SandwichTest
+api-version: 1.13
