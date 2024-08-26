@@ -36,7 +36,9 @@ public class SandwichFacade {
     public void sendSandwich(@NotNull Player player, @NotNull Iterable<Object> packets) throws SandwichRuntimeException {
         NetworkManager networkManager = this.getNetworkManager(player);
         Channel channel = networkManager.channel;
-        if (!channel.hasAttr(PipelineAgent.MARKER)) {
+        // ProtocolLib using netty 4.0.23.Final. So method io.netty.util.AttributeMap.hasAttr() isn't implemented
+        // in com.comphenix.protocol.injector.netty.channel.NettyChannelProxy
+        if (channel.attr(PipelineAgent.MARKER) == null) {
             throw new SandwichRuntimeException("Sandwiched packets not sent. You probably forgot to call inject.");
         }
         Iterator<Object> iterator = packets.iterator();
