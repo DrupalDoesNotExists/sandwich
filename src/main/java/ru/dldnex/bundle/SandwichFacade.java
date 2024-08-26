@@ -6,6 +6,7 @@ import net.minecraft.server.v1_16_R3.NetworkManager;
 import net.minecraft.server.v1_16_R3.Packet;
 import org.bukkit.craftbukkit.v1_16_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 import ru.dldnex.bundle.exception.SandwichRuntimeException;
 import ru.dldnex.bundle.network.PipelineAgent;
@@ -13,7 +14,6 @@ import ru.dldnex.bundle.registry.IdentityFlagRegistry;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import java.util.logging.Logger;
 
 /**
  * Yes.
@@ -25,8 +25,8 @@ public class SandwichFacade {
     private final IdentityFlagRegistry identityFlagRegistry = new IdentityFlagRegistry();
     private final PipelineAgent pipelineAgent;
 
-    public SandwichFacade(@NotNull Logger logger) {
-        pipelineAgent = new PipelineAgent(logger, this.identityFlagRegistry);
+    public SandwichFacade(@NotNull Plugin plugin) {
+        pipelineAgent = new PipelineAgent(plugin, this.identityFlagRegistry);
     }
 
     private @NotNull NetworkManager getNetworkManager(@NotNull Player player) {

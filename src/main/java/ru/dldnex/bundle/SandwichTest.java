@@ -26,7 +26,7 @@ public class SandwichTest extends JavaPlugin implements Listener {
 
     private static final boolean USE_SANDWICH = true;
 
-    private final SandwichFacade sandwichFacade = new SandwichFacade(this.getLogger());
+    private final SandwichFacade sandwichFacade = new SandwichFacade(this);
     private final Set<Player> watchingPlayers = new HashSet<>();
     private BukkitTask bukkitTask;
 
