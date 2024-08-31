@@ -34,11 +34,7 @@ public class SandwichFacade {
         return handle.playerConnection.networkManager;
     }
 
-    public void inject(@NotNull Player player) throws SandwichRuntimeException {
-        Channel channel = getNetworkManager(player).channel;
-        pipelineAgent.instrument(channel);
-    }
-
+    @Deprecated
     public void sendPackets(@NotNull Player player, @NotNull Iterable<Object> packets) throws SandwichRuntimeException {
         NetworkManager networkManager = this.getNetworkManager(player);
         for (Object packet : packets) {
@@ -46,6 +42,7 @@ public class SandwichFacade {
         }
     }
 
+    @Deprecated
     public void sendPackets(@NotNull Player player, @NotNull Object... packets) throws SandwichRuntimeException {
         this.sendPackets(player, Arrays.asList(packets));
     }
@@ -53,11 +50,9 @@ public class SandwichFacade {
     public void sendSandwich(@NotNull Player player, @NotNull Iterable<Object> packets) throws SandwichRuntimeException {
         NetworkManager networkManager = this.getNetworkManager(player);
         Channel channel = networkManager.channel;
-        // ProtocolLib using netty 4.0.23.Final. So method io.netty.util.AttributeMap.hasAttr() isn't implemented
-        // in com.comphenix.protocol.injector.netty.channel.NettyChannelProxy
-        if (channel.attr(PipelineAgent.MARKER).get() == null) {
-            throw new SandwichRuntimeException("Sandwiched packets not sent. You probably forgot to call inject.");
-        }
+
+        this.pipelineAgent.instrument(channel); // inject to pipeline
+
         Iterator<Object> iterator = packets.iterator();
         while (iterator.hasNext()) {
             Object packet = iterator.next();

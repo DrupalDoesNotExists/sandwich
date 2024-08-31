@@ -7,11 +7,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
@@ -46,11 +44,6 @@ public class SandwichTest extends JavaPlugin implements Listener {
     public void onDisable() {
         this.bukkitTask.cancel();
         HandlerList.unregisterAll((Plugin) this);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void joined(PlayerJoinEvent event) {
-        if (USE_SANDWICH) sandwichFacade.inject(event.getPlayer());
     }
 
     @EventHandler
@@ -124,9 +117,9 @@ public class SandwichTest extends JavaPlugin implements Listener {
         }
 
         if (USE_SANDWICH) {
-            sandwichFacade.sendSandwich(player, packets);
+            this.sandwichFacade.sendSandwich(player, packets);
         } else {
-            sandwichFacade.sendPackets(player, packets);
+            this.sandwichFacade.sendPackets(player, packets);
         }
     }
 }
