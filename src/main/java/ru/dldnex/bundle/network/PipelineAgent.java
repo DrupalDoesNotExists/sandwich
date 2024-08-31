@@ -111,18 +111,17 @@ public class PipelineAgent {
             this.logger.info("Pipeline with packets writing order (reversed pipeline.names()):");
             for (String handlerName : CollectionUtils.reverseList(pipeline.names())) {
                 if (debugHandlerNames.contains(handlerName)) continue;
-                boolean proxied = false;
-                ChannelHandler handler = pipeline.get(handlerName);
-                if (handler instanceof ProxyChannelHandler proxyHandler) {
-                    proxied = true;
-                    handler = proxyHandler.getProxiedHandler();
+                ChannelHandler baseHandler = pipeline.get(handlerName);
+                ProxyChannelHandler proxyHandler = null;
+                if (baseHandler instanceof ProxyChannelHandler proxyHandler1) {
+                    baseHandler = proxyHandler1.getProxiedHandler();
+                    proxyHandler = proxyHandler1;
                 }
                 this.plugin.getLogger().info(
-                        (handler == null ? "handler.not.found"
-                                : handler.getClass().getName()
-                                + (proxied ? " (proxied with " + handler.getClass().getSimpleName() + ")" : ""))
+                        (baseHandler == null ? "handler.not.found" : baseHandler.getClass().getName())
+                                + (proxyHandler == null ? "" : " (proxied with " + proxyHandler.getClass().getSimpleName() + ")")
                                 + " | " + handlerName
-                                + ": " + handlersHandlingTypesAfter.get(handlerName)
+                                + " | " + handlersHandlingTypesAfter.get(handlerName)
                                 + " -> " + handlersHandlingTypesBefore.get(handlerName));
             }
         }, dataStoreDurationSeconds * 20L);
